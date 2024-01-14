@@ -1,0 +1,122 @@
+#include"library.h"
+#include<ctime>;
+#include<windows.h>;
+using namespace std;
+
+ int high(double v,double t,double angle)
+{
+	 double g= 32.174;
+	 double h;
+	 h=v*t*cos(angle)-0.5*g*t*t;
+	 return h;
+ }
+
+void main()
+{
+	//show picture
+
+	print("Enter the initial velocity "); 
+	const double v = read_double(); 
+	print("Enter the angle "); 
+	const double angle = read_double(); 
+	double h,t,tt;
+	double g= 32.174;
+	tt=2*v/g;
+	print("tt=");
+	print(tt);
+	cout<<endl;
+	make_window(1200,600);
+	set_pen_width(5);
+
+	//draw cannon
+	double xe,ye;
+	int x,y,r,E1,E2,L1,L2,L3;
+	int x1,y1,x2,y2;
+	const double Pi=3.1415926535;
+	double i=Pi/100;
+	x=115;
+	y=565;
+	r=25;
+	L1=50;
+	L2=75;
+	L3=L1+L2+2*r;
+	E1=70;
+	E2=50;
+	double b=asin((E1-E2)/2.0/(L3));
+	double len = L3 * cos(b);
+	double d=sqrt(len*len + (E1+r)*(E1+r)/4.0);
+	double G=asin(E1/2.0/d);
+	move_to(x,y);
+	set_heading_degrees(0);
+	move_distance(r);
+	turn_right_by_degrees (90);
+	move_distance(r);
+	turn_left_by_degrees (90);
+	x1=x;
+	y1=y-r;
+	while(i<=2*Pi)
+	{
+		x2=x1+r*cos(i);
+		y2=y1-r*sin(i);
+		draw_to(x2,y2);
+		i=i+Pi/100;
+	}
+	move_to(x1,y1);
+	set_heading_degrees(0);
+	turn_right_by_radians (angle-b);
+	move_distance(r);
+	draw_distance(L2);
+	turn_left_by_radians (Pi/2-b);
+	draw_distance(E2);
+	turn_left_by_radians (Pi/2-b);
+	draw_distance(L3);
+	turn_left_by_radians (Pi/2+b);
+	draw_distance(E1);
+	turn_left_by_radians (Pi/2+b);
+	draw_distance(L1);
+	xe = x1 - (L1+r) * sin(angle-b) + d * sin(angle-G);
+	ye = y1 + (L1+r) * cos(angle-b) - d * cos(angle-G);
+
+	//make random
+	srand((unsigned)time(0));
+	double z=rand()%1000+400;
+	double p=rand()%600+150;
+
+	//draw enermy
+	 double xx,yy;
+	 double rr=150;
+	 double ii=Pi/100;
+	 move_to(z,p);
+	 move_to(z+rr,p);
+	 while(ii<=Pi)
+	 {
+		 xx=z+rr*cos(ii);
+		 yy=p-rr*sin(ii);
+		 draw_to(xx,yy);
+		 ii=ii+Pi/100;
+	 }
+	 set_pen_width(10);
+	 move_to(z-100,p-80);
+	 draw_to(z-30,p-80);
+	 move_to(z+30,p-80);
+	 draw_to(z+100,p-80);
+
+	 //draw track
+	 /*double distance=sqrt(((xe+v*t*sin(angle))-950)*(xe+v*t*sin(angle)-950)+((ye-h)-600)*((ye-h)-600));*/
+	for(t=0.0001;t<=tt;t+=0.0001)
+	{
+		h=high(v,t,angle);
+		set_pen_color(t/tt,0.0,1-(t/tt));
+		draw_point(xe+v*t*sin(angle),ye-h);
+		print(h);
+		cout<<endl;
+		if(sqrt(((xe+v*t*sin(angle))-950)*(xe+v*t*sin(angle)-950)+((ye-h)-600)*((ye-h)-600))<=rr)
+		{
+			move_to(950,300);
+			set_font_size(100);
+			set_pen_color(color::black);
+			write_string("Hit!");
+			break;
+		}
+	}
+}
