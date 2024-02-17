@@ -1,3 +1,6 @@
+//based on visual studio 2012
+//C++ programming
+
 // it must include file "library.h"
 // it will create a window which is a game
 // set the angle of cannon and the initial velocity
